@@ -106,3 +106,7 @@ bool Physics::stationaryCheck() {
 	}
 	return true;
 }
+
+//Attractive Forces
+
+//Repulsive Forces
