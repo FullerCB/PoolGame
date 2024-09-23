@@ -3,33 +3,40 @@
 
 
 //brute force method due to small number of balls. I will implement k-d tree algorithim if time permits but honestly may just add overhead
-std::vector<glm::vec2> Physics::collison() {
+std::vector<glm::vec2> collison() {
 	std::vector<glm::vec2> force(16);
 
 	for (int i = 0; i <= 15; ++i) {
-		
-		//Particle Particle collisions
 
+		//Particle Particle Collisions
 		for (int j = i + 1; j <= 15; ++j) {
 			glm::vec2 v1 = ballData[i].position; //first ball position
 			glm::vec2 v2 = ballData[j].position; //second ball position
+			
+			//General inputs to minimize calculations
 			float distance = glm::length(v2 - v1);
 
-			//this is a nonconservative collision force
+			//___CONTACT FORCES___
 			if (distance < (ballData[i].radius + ballData[j].radius)) {
-				//dynamic contact collision
+
+				//General Contact Calculations
 				glm::vec2 forceDirection = (v2 - v1) / distance; //unit vector between balls
-				auto overlap = ballData[i].radius + ballData[j].radius - distance; //finds overlap
+				float overlap = ballData[i].radius + ballData[j].radius - distance; //finds overlap
+				glm::vec2  relativeVelocity = ballData[i].velocity - ballData[j].velocity; //relative velocity
+
+				//this is a nonconservative collision force
+				//dynamic contact collision
 				float forceMagnitude = 120000 * overlap; //some function of overlap
 				force[i] -= forceDirection * forceMagnitude;
 				force[j] += forceDirection * forceMagnitude;
 
 				//damping force
-				glm::vec2  relativeVelocity = ballData[i].velocity - ballData[j].velocity;
 				glm::vec2 dampingForce = 500.0f * glm::dot(relativeVelocity, forceDirection) * forceDirection;
 				force[i] -= dampingForce;
 				force[j] += dampingForce;
 			}
+
+			//___NON CONTACT FORCES___
 
 			//coloumbs force determined to awkward to implement - constant slow acceleration and changing board 
 			
@@ -42,7 +49,6 @@ std::vector<glm::vec2> Physics::collison() {
 		}
 
 		//Particle Wall collisions
-
 		for (auto& edge : vectorLines) {
 			float fLineX1 = edge.ex - edge.sx;
 			float fLineY1 = edge.ey - edge.sy;
@@ -62,26 +68,25 @@ std::vector<glm::vec2> Physics::collison() {
 				//static collision 
 				glm::vec2 forceDirection = (ballData[i].position - closestPoint) / distance; //unit vector between balls
 				float overlap = ballData[i].radius + edge.radius - distance;
-				float forceMagnitude = 4000 * ballData[i].mass * overlap; //some function of overlap
+				float forceMagnitude = 6000 * ballData[i].mass * overlap; //some function of overlap
 				force[i] += forceDirection * forceMagnitude;
 			}
 		}
 
 		//Particle Friction force
-		//numerical handling will deal with balls with very small velocities
 		if (length(ballData[i].velocity) > 10.0f) {
 			glm::vec2 frictionDirection = ballData[i].velocity /   (-1.0f * length(ballData[i].velocity));
 			force[i] += (25.0f * length(ballData[i].velocity) + (80.0f * (9.81f) * ballData[i].mass)) * frictionDirection;
 		}
 
+		//numerical handling will deal with balls with very small velocities
 	}
 	return force;
 }
 
 std::vector<glm::vec2> Physics::accelerationCalculation() {
 	std::vector<glm::vec2> force = collison();
-	std::vector<glm::vec2> acceleration;
-	acceleration.resize(16);
+	std::vector<glm::vec2> acceleration(16);
 	for (int i = 0; i <= 15; ++i) {
 		acceleration[i] = force[i] / ballData[i].mass;
 	}
@@ -108,5 +113,8 @@ bool Physics::stationaryCheck() {
 }
 
 //Attractive Forces
+static std::vector<glm::vec2> forceTemplate() {
+
+}
 
 //Repulsive Forces

@@ -4,6 +4,7 @@
 #include "Physics.h"
 #include "NumericalHandling.h"
 #include "Inputs.h"
+#include "Borders.h"
 
 
 /*
@@ -11,6 +12,9 @@
 Game engine
 
 */
+
+//pixels/picometer
+extern float scalingFactor;
 
 class Game
 {
@@ -28,7 +32,6 @@ private:
 
 	// Create a vector to store the ball sprites
 	std::vector<sf::Sprite> ballSprites;
-	float scalingFactor;
 
 	//other variables
 	bool scratch = true;

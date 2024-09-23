@@ -1,8 +1,6 @@
 #include "BallManager.h"
 
 std::vector<sBallManager> ballData(16);
-std::vector<sLineSegment> vectorLines(6);
-std::vector<sPocketProperties> pocketLocations(6);
 
 void BallManager::ballSet(int index, float r, float mass, float charge)
 {
@@ -11,21 +9,17 @@ void BallManager::ballSet(int index, float r, float mass, float charge)
     ballData[index].charge = charge;
 }
 
-void BallManager::ballInitialize(float solidRadius, float stripeRadius)
+void BallManager::ballInitialize(float solidRadius, float stripeRadius, float tableWidth, float tableHeight)
 {
     //5556 x 3181 pm
-    float blackX = 1554;
-    float blackY = 1590.5;
-    float positionRadius = glm::max(63.0f, glm::max(stripeRadius, solidRadius));
+    float blackX = 3108;
+    float blackY = tableHeight / 2;
+    float positionRadius = glm::max(126.0f, glm::max(stripeRadius, solidRadius));
     
     //cue
-    ballData[0].mass = 55;
-    ballData[0].radius = 63;
     ballData[0].velocity = glm::vec2(0.0f, 0.0f);
 
     //8ball
-    ballData[8].mass = 55;
-    ballData[8].radius = 63;
     ballData[8].velocity = glm::vec2(0.0f, 0.0f);
 
     //solids
@@ -62,10 +56,10 @@ void BallManager::ballRemove(int index)
 }
 
 //sets sprites based on positioning
-SpritePosition BallManager::spriteSet(int index, float scalingFactor)
+glm::vec2 BallManager::spriteSet(int index, float scalingFactor)
 {
     // Create an instance of the SpritePosition struct
-    SpritePosition spritePosition;
+    glm::vec2 spritePosition;
 
     // Calculate the positions
     spritePosition.x = std::round(ballData[index].position.x * scalingFactor);

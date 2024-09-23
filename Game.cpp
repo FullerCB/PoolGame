@@ -1,8 +1,14 @@
 
 #include "Game.h"
 
-//static variables
+//Intialization of assetmanager
 AssetManager Game::assetManager;
+
+//table dimensions in picometers
+float tableWidth = 11112.0f;
+float tableHeight = tableWidth * 6362.0f / 11112.0f;
+//pixels/picometer
+float scalingFactor = 1.0f;
 
 void Game::initVariables()
 {
@@ -109,8 +115,9 @@ void Game::createObjects() {
     backgroundSprite.setScale(backScaleX, backScaleY);
 
     //positioning factor to do physics and positioning and convert to something the window can ouotput (from picometers -> pixels)
-    //Pool table normal 262cm x 150cm - Pool atoms is 5556 x 3181 pm
-    scalingFactor = backScaleX * backgroundSprite.getLocalBounds().width / 5556.0f;
+    //Pool table normal 262cm x 150cm - Pool atoms is 11112 x 6362 pm
+
+    scalingFactor = backScaleX * backgroundSprite.getLocalBounds().width / tableWidth;
 
     //Create Cue Sprite
     cueSprite.setTexture(assetManager.GetTexture("cue"));
@@ -128,7 +135,7 @@ void Game::createObjects() {
 
 
     //Set start position of sprites - manually set, ballSet modifies ballData
-    //Pool table normal 262cm x 150cm - Pool atoms is 5556 x 3181 pm
+    //Pool table normal 262cm x 150cm - Pool atoms is 11112 x 6362 pm
     
     //Ball properties dependent on atom
 
@@ -154,15 +161,12 @@ void Game::createObjects() {
         stripeCharge = 3;
     }
 
-    solidRadius = solidRadius / 2; //originally configured the for iron ion so im diving radius by 2 for proper scaling
-    stripeRadius = stripeRadius / 2;
-
     //ballSet modifies ball properties
     //index radius mass charge
     //cue
-    ballManager.ballSet(0, 63, 55, 2);
+    ballManager.ballSet(0, 126, 55, 2);
     //8ball
-    ballManager.ballSet(8, 63, 55, 0);
+    ballManager.ballSet(8, 126, 55, 0);
     //solids
     for (int i = 1; i <= 7; i++) {
         ballManager.ballSet(i, solidRadius, solidMass, solidCharge);
@@ -174,7 +178,7 @@ void Game::createObjects() {
 
     //Pool table normal 262cm x 150cm - Pool atoms is 5556 x 3181 pm
     //places them in triangular formation and scratches cue ball
-    ballManager.ballInitialize(solidRadius, stripeRadius);
+    ballManager.ballInitialize(solidRadius, stripeRadius, tableWidth, tableHeight);
 
 
     // Creating Background edge (specific to background sprite  annoying to configure) 5556 x 3181 pm
@@ -183,89 +187,32 @@ void Game::createObjects() {
     // the beam is defined as a starting point, end point, and radius, the radius is used to approximate the corners on the pool table
     // I could just add more beams so no radius approximation is necessary, but that will increase runtime and not really effect much - this solution is more efficient, faster to implement, and only slightly more complex to code
     // 
-    //left side
-    vectorLines[0].sx = 175.0f;
-    vectorLines[0].sy = 653.0f;
-    vectorLines[0].ex = 175.0f;
-    vectorLines[0].ey = 2527.3f;
-    vectorLines[0].radius = 180.0f;
-    //right side
-    vectorLines[1].sx = 5381.0f;
-    vectorLines[1].sy = 653.0f;
-    vectorLines[1].ex = 5381.0f;
-    vectorLines[1].ey = 2527.3f;
-    vectorLines[1].radius = 180.0f;
-    //top left
-    vectorLines[2].sx = 653.0f;
-    vectorLines[2].sy = 175.0f;
-    vectorLines[2].ex = 2510.0f;
-    vectorLines[2].ey = 175.0f;
-    vectorLines[2].radius = 180.0f;
-    //top right
-    vectorLines[3].sx = 3046.0f;
-    vectorLines[3].sy = 175.0f;
-    vectorLines[3].ex = 4903.0f;
-    vectorLines[3].ey = 175.0f;
-    vectorLines[3].radius = 180.0f;
-    //bottom left
-    vectorLines[4].sx = 653.0f;
-    vectorLines[4].sy = 3006.0f;
-    vectorLines[4].ex = 2510.0f;
-    vectorLines[4].ey = 3006.0f;
-    vectorLines[4].radius = 180.0f;
-    //bottom right
-    vectorLines[5].sx = 3046.0f;
-    vectorLines[5].sy = 3006.0f;
-    vectorLines[5].ex = 4903.0f;
-    vectorLines[5].ey = 3006.0f;
-    vectorLines[5].radius = 180.0f;
-
-    //Pocket locations and radius
-    float pocketCornerRad = 145.0f;
-    float pocketCenterRad = 130.0f;
-    //TL
-    pocketLocations[0].position.x = 365.0f;
-    pocketLocations[0].position.y = 355.0f;
-    pocketLocations[0].radius = pocketCornerRad;
-    //TM
-    pocketLocations[1].position.x = 2772.0f;
-    pocketLocations[1].position.y = 214.0f;
-    pocketLocations[1].radius = pocketCenterRad;
-    //TR
-    pocketLocations[2].position.x = 5212.0f;
-    pocketLocations[2].position.y = 355.0f;
-    pocketLocations[2].radius = pocketCornerRad;
-    //BL
-    pocketLocations[3].position.x = 365.0f;
-    pocketLocations[3].position.y = 2812.0f;
-    pocketLocations[3].radius = pocketCornerRad;
-    //BM
-    pocketLocations[4].position.x = 2772.0f;
-    pocketLocations[4].position.y = 2952.0f;
-    pocketLocations[4].radius = pocketCenterRad;
-    //BR
-    pocketLocations[5].position.x = 5212.0f;
-    pocketLocations[5].position.y = 2812.0f;
-    pocketLocations[5].radius = pocketCornerRad;
+    // 
+    // SCALAR for changing table values
+    float borderScaler = tableHeight / 3181;
+    //Create Borders
+    Borders::createBorder(borderScaler);
+    //Create Pockets
+    Borders::createPockets(borderScaler);
 
     //Create ball sprite scale
     //Pool table is 262cm x 150cm, pool ball is 5.715cm (diameter), however the png for the balls is 980x980 but the ball is only 576x576
-    //This is ATOMIC billiards so an atom radius of 63 picometers (iron) will be the same relative size as a normal pool ball
+    //This is atomic billiards so an atom radius of 126 picometers (iron) will be the same relative size as a normal pool ball
     sf::Sprite tempBallSprite;
     tempBallSprite.setTexture(assetManager.GetTexture("ball1"));
-    float visualAdjuster = 1.045f; // accounts for visual output discrepency
-    float ballScale = visualAdjuster * 0.0372f / 63.0f * backScaleX * backgroundSprite.getLocalBounds().width / tempBallSprite.getLocalBounds().width;
+    float visualAdjuster = 1.045f; // accounts for slight visual output discrepency
+    float ballScale = visualAdjuster * 0.0372f / 126.0f * backScaleX * backgroundSprite.getLocalBounds().width / tempBallSprite.getLocalBounds().width;
     
     //assigning from ballData to sprites and scaling stuff
     for (int i = 0; i <= 15; ++i) {
         auto textureSize = ballSprites[i].getLocalBounds(); //this finds the size of the sprite
         ballSprites[i].setScale(ballScale * ballData[i].radius, ballScale * ballData[i].radius); //
         ballSprites[i].setOrigin(textureSize.width / 2.f, textureSize.height / 2.f); //sets the positioning of sprite to center (default is top left)
-        SpritePosition spritePosition = ballManager.spriteSet(i, scalingFactor);//sets sprite location for the ballData positins
+        glm::vec2 spritePosition = ballManager.spriteSet(i, scalingFactor);//sets sprite location for the ballData positins
         ballSprites[i].setPosition(spritePosition.x, spritePosition.y);
     }
 
-    //cuefix
+    //fixes issue so cue ball will not collide during intialization
     ballData[0].radius = -500;
 
 }
@@ -286,7 +233,7 @@ void Game::pollEvents()
                 this->window->close();
             else if (this->ev.key.code == sf::Keyboard::R)
             {
-                ballManager.ballInitialize(solidRadius, stripeRadius);
+                ballManager.ballInitialize(solidRadius, stripeRadius, tableWidth, tableHeight);
                 ballManager.ballRemove(0);
             }
             break;
@@ -306,7 +253,7 @@ void Game::pollEvents()
             if (scratch) { //check if scratch conditon is true
                 ballData[0].position = mousePosition / scalingFactor;
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) { //places  ball after clicking
-                    ballData[0].radius = 63;
+                    ballData[0].radius = 126;
                     scratch = false;
                 }
                 break;
@@ -314,13 +261,14 @@ void Game::pollEvents()
             
             
             //this makes it so you can hit the ball from any angle
-            float closeWallDistance = min(min(ballData[0].position.x, ballData[0].position.y), min(abs(5556 - ballData[0].position.x), abs(3181 - ballData[0].position.y)));
-            float cueLength = 1832.0f;
-            if (closeWallDistance < 1832.0f) {
+            float cueScale = tableHeight / 3181;
+            float closeWallDistance = min(min(ballData[0].position.x, ballData[0].position.y), min(abs(tableWidth - ballData[0].position.x), abs(tableHeight - ballData[0].position.y)));
+            float cueLength = 1832.0f * cueScale ;
+            if (closeWallDistance < cueLength) {
                 cueLength = closeWallDistance * 0.7f;
             }
             // move cue to mouse
-            cue.updateCuePosition(cueSprite, mousePosition.x, mousePosition.y, scalingFactor, cueLength);
+            cue.updateCuePosition(cueSprite, mousePosition.x, mousePosition.y, scalingFactor, cueLength, cueScale);
             if (cue.cueContact(cueLength)) {
                 //MUST HOLD SHIFT TO FIRE CUE
                 // COULD BE A BUTTON ON MOBILE
@@ -376,13 +324,14 @@ void Game::update() //reality update
 
     //movingsprites
     for (int i = 0; i <= 15; ++i) {
-        SpritePosition spritePosition = ballManager.spriteSet(i, scalingFactor);
+        glm::vec2 spritePosition = ballManager.spriteSet(i, scalingFactor);
         ballSprites[i].setPosition(spritePosition.x, spritePosition.y);
     }
 
     //testing
     //std::cout << length(ballData[0].velocity.x) << std::endl;
 }
+
 
 void Game::render() //visualization
 {
@@ -403,7 +352,13 @@ void Game::render() //visualization
     //draw cue
     this->window->draw(cueSprite);
 
-    //Draw game objects
+    //testing
+    for (int i = 0; i <= 5; ++i) {
+        LineWithCircles borderShape(vectorLines[i], scalingFactor);
+        this->window->draw(borderShape);
+    }
 
+
+    //display
     this->window->display();
 }

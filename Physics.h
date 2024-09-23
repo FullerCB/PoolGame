@@ -1,5 +1,6 @@
 #pragma once
 #include "BallManager.h"
+#include "Borders.h"
 
 using namespace glm;
 
@@ -8,7 +9,7 @@ using namespace glm;
 class Physics
 {
 private:
-	static std::vector<glm::vec2> collison();
+
 public:
 	static std::vector<glm::vec2> accelerationCalculation();
 	static bool pocketSinkCheck(int index);

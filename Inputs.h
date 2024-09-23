@@ -7,7 +7,7 @@ private:
     glm::vec2 cuePos;
 
 public:
-    void updateCuePosition(sf::Sprite& cueSprite, float mouseX, float mouseY, float scalingFactor, float cueLengt);
+    void updateCuePosition(sf::Sprite& cueSprite, float mouseX, float mouseY, float scalingFactor, float cueLength, float cueScale);
     bool cueContact(float cueLength) const;
     glm::vec2 fireCue() const;
 };

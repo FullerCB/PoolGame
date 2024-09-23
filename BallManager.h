@@ -21,31 +21,17 @@ struct sBallManager {
 };
 extern std::vector<sBallManager> ballData; // Declaration of the vector of Ball objects
 
-struct sLineSegment {
-    float sx, sy;
-    float ex, ey;
-    float radius;
-};
-
-extern std::vector<sLineSegment> vectorLines;
-
-struct sPocketProperties {
-    glm::vec2 position;
-    float radius;
-};
-
-extern std::vector<sPocketProperties> pocketLocations;
-
-// Define the struct for sprite position
-struct SpritePosition {
-    float x, y;
-};
-
 class BallManager {
 public:
-    //member functions
+    /// <summary>
+    /// Sets Ball Parameters
+    /// </summary>
+    /// <param name="index"> - the index for ball selection</param>
+    /// <param name="r"> - radius in picometers</param>
+    /// <param name="mass"> - mass in atomic mass units</param>
+    /// <param name="charge"> - charge in elementary charge</param>
     void ballSet(int index, float r, float mass, float charge);
-    void ballInitialize(float solidRadius, float stripeRadius);
+    void ballInitialize(float solidRadius, float stripeRadius, float tableWidth, float tableHeight);
     void ballRemove(int index);
-    SpritePosition spriteSet(int index, float scalingFactor);
+    glm::vec2 spriteSet(int index, float scalingFactor);
 };

@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="AssetManager.cpp" />
     <ClCompile Include="BallManager.cpp" />
+    <ClCompile Include="Borders.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Inputs.cpp" />
     <ClCompile Include="main.cpp" />
@@ -139,6 +140,7 @@
   <ItemGroup>
     <ClInclude Include="AssetManager.h" />
     <ClInclude Include="BallManager.h" />
+    <ClInclude Include="Borders.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Inputs.h" />
     <ClInclude Include="NumericalHandling.h" />
