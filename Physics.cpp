@@ -1,9 +1,28 @@
 #include "Physics.h"
 
+//types of collisions
+static glm::vec2 Default() {
 
+}
+
+static glm::vec2 vanDerWaals() {
+
+}
+
+static glm::vec2 coulomb() {
+
+}
+
+static glm::vec2 gravity() {
+
+}
+
+static glm::vec2 lennardJonesPotential() {
+
+}
 
 //brute force method due to small number of balls. I will implement k-d tree algorithim if time permits but honestly may just add overhead
-std::vector<glm::vec2> collison() {
+static std::vector<glm::vec2> collison() {
 	std::vector<glm::vec2> force(16);
 
 	for (int i = 0; i <= 15; ++i) {

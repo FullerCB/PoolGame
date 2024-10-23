@@ -131,6 +131,7 @@
     <ClCompile Include="BallManager.cpp" />
     <ClCompile Include="Borders.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Graph.cpp" />
     <ClCompile Include="Inputs.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NumericalHandling.cpp" />
@@ -142,6 +143,7 @@
     <ClInclude Include="BallManager.h" />
     <ClInclude Include="Borders.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Graph.h" />
     <ClInclude Include="Inputs.h" />
     <ClInclude Include="NumericalHandling.h" />
     <ClInclude Include="Physics.h" />

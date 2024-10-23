@@ -352,12 +352,12 @@ void Game::render() //visualization
     //draw cue
     this->window->draw(cueSprite);
 
-    //testing
+    /*testing
     for (int i = 0; i <= 5; ++i) {
         LineWithCircles borderShape(vectorLines[i], scalingFactor);
         this->window->draw(borderShape);
     }
-
+    */
 
     //display
     this->window->display();
